@@ -1,0 +1,29 @@
+/*   
+Theme Name: Thematic Options
+Theme URI: http://wptheming.com/
+Description: Thematic child theme with an options array to speed development.
+Author: Devin Price
+Author URI: http://wptheming.com/
+Template: thematic
+Version: 2.0
+Tags: thematic
+.
+Thematic is © Ian Stewart http://themeshaper.com/
+
+Initial development by Tristan Waddington.
+AJAX and 1.1 updates by Aaron Jorbin.
+
+.
+*/
+
+/* Reset browser defaults */
+@import url('../thematic/library/styles/reset.css');
+
+/* Apply basic typography styles */
+@import url('../thematic/library/styles/typography.css');
+
+/* Apply basic image styles */
+@import url('../thematic/library/styles/images.css');
+
+/* Apply default theme styles and colors */
+@import url('../thematic/library/styles/default.css');
