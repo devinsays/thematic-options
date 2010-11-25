@@ -19,9 +19,10 @@ add_action('init', 'remove_thematic_panel');
 
 if (!function_exists(optionsframework_wp_head)) {
 	function optionsframework_wp_head() { 
+		$shortname =  get_option('of_shortname');
 	
 		//Layouts
-		 $layout = get_option('of_layout');
+		 $layout = get_option($shortname .'_layout');
 		 if ($layout == '') {
 		 	$layout = '2c-r-fixed';
 		 }
@@ -91,7 +92,8 @@ function of_head_css() {
 /*-----------------------------------------------------------------------------------*/
 
 function childtheme_favicon() {
-		if (get_option('of_custom_favicon') != '') {
+		$shortname =  get_option('of_shortname'); 
+		if (get_option($shortname . '_custom_favicon') != '') {
 	        echo '<link rel="shortcut icon" href="'.  get_option('of_custom_favicon')  .'"/>'."\n";
 	    }
 		else { ?>
@@ -108,7 +110,8 @@ add_action('wp_head', 'childtheme_favicon');
 // If a logo is uploaded, unhook the page title and description
 
 function add_childtheme_logo() {
-	$logo = get_option('of_logo');
+	$shortname =  get_option('of_shortname');
+	$logo = get_option($shortname . '_logo');
 	if (!empty($logo)) {
 		remove_action('thematic_header','thematic_blogtitle', 3);
 		remove_action('thematic_header','thematic_blogdescription',5);
@@ -120,7 +123,8 @@ add_action('init','add_childtheme_logo');
 // Displays the logo
 
 function childtheme_logo() {
-	$logo = get_option('of_logo');
+	$shortname =  get_option('of_shortname');
+	$logo = get_option($shortname . '_logo');
     $heading_tag = ( is_home() || is_front_page() ) ? 'h1' : 'div';?>
     <<?php echo $heading_tag; ?> id="site-title">
 	<a href="<?php bloginfo('url'); ?>" title="<?php bloginfo('description'); ?>">
@@ -135,7 +139,8 @@ function childtheme_logo() {
 /*-----------------------------------------------------------------------------------*/
 
 function childtheme_footer($thm_footertext) {
-	if ($footertext = get_option('of_footer_text'))
+	$shortname =  get_option('of_shortname');
+	if ($footertext = get_option($shortname . '_footer_text'))
     	return $footertext;
 }
 
@@ -146,7 +151,8 @@ add_filter('thematic_footertext', 'childtheme_footer');
 /*-----------------------------------------------------------------------------------*/
 
 function childtheme_analytics(){
-	$output = get_option('of_google_analytics');
+	$shortname =  get_option('of_shortname');
+	$output = get_option($shortname . '_google_analytics');
 	if ( $output <> "" ) 
 		echo stripslashes($output) . "\n";
 }

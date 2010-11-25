@@ -1,3 +1,3 @@
 The Thematic Options Panel is a framework to help developers build options into their themes.  To view a video demo of how it works and read the documentation, please visit: http://wptheming.com/thematic-options-panel.
 
-Version 2.0 of this theme was completely recoded using WooThemes Canvas as a base (http://www.woothemes.com/2010/02/canvas/).  The Thematic Options Panel is actually a slimmed down version of their version in Canvas, and I'd encourage you to check out and support WooThemes if you find this project helpful.}
+Version 2.0 of this theme was completely recoded using WooThemes Canvas as a base (http://www.woothemes.com/2010/02/canvas/).  The Thematic Options Panel is actually a slimmed down version of their version in Canvas, and I'd encourage you to check out and support WooThemes if you find this project helpful.

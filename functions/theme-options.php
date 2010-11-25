@@ -172,13 +172,7 @@ $options[] = array( "name" => "Upload Basic",
 					"desc" => "An image uploader without text input.",
 					"id" => $shortname."_uploader",
 					"std" => "",
-					"type" => "upload_min");  
-
-$options[] = array( "name" => "Upload",
-					"desc" => "A full uploader with the option of text input.",
-					"id" => $shortname."_uploader_2",
-					"std" => "",
-					"type" => "upload");      
+					"type" => "upload_min");     
                                     
 $options[] = array( "name" => "Input Text",
 					"desc" => "A text input field.",
@@ -234,7 +228,7 @@ $options[] = array( "name" => "Image Select",
 $options[] = array( "name" => "Textarea",
 					"desc" => "Textarea description.",
 					"id" => $shortname."_example_textarea",
-					"std" => "default text",
+					"std" => "Default Text",
 					"type" => "textarea"); 
                                         
 $options[] = array( "name" => "Multicheck",
@@ -257,5 +251,4 @@ update_option('of_shortname',$shortname);
 
 }
 }
-
 ?>
