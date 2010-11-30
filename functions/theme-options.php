@@ -55,7 +55,8 @@ if ( is_dir($alt_stylesheet_path) ) {
 }
 
 //More Options
-$all_uploads_path = get_bloginfo('home') . '/wp-content/uploads/';
+$uploads_arr = wp_upload_dir();
+$all_uploads_path = $uploads_arr['path'];
 $all_uploads = get_option('of_uploads');
 $other_entries = array("Select a number:","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19");
 $body_repeat = array("no-repeat","repeat-x","repeat-y","repeat");
@@ -78,7 +79,7 @@ $url =  get_bloginfo('stylesheet_directory') . '/functions/images/';
 $options[] = array( "name" => "Main Layout",
 					"desc" => "Select main content and sidebar alignment. Choose between 2 or 3 column layout.",
 					"id" => $shortname."_layout",
-					"std" => "2-col-left",
+					"std" => "2c-l-fixed",
 					"type" => "images",
 					"options" => array(
 						'2c-r-fixed' => $url . '2cr.png',
