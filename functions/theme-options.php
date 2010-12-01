@@ -85,9 +85,7 @@ $options[] = array( "name" => "Main Layout",
 						'2c-l-fixed' => $url . '2cl.png',
 						'3c-fixed' => $url . '3cm.png',
 						'3c-r-fixed' => $url . '3cr.png')
-					);  
-                                                                       
-
+					);
 $options[] = array( "name" => "Custom Favicon",
 					"desc" => "Upload a 16px x 16px Png/Gif image that will represent your website's favicon.",
 					"id" => $shortname."_custom_favicon",
