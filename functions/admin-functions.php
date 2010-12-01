@@ -11,7 +11,7 @@ function of_head() { do_action( 'of_head' ); }
 /*-----------------------------------------------------------------------------------*/
 
 function of_style_path() {
-    $style = $_REQUEST[style];
+    $style = $_REQUEST['style'];
     if ($style != '') {
         $style_path = $style;
     } else {

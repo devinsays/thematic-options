@@ -25,7 +25,7 @@ function optionsframework_add_admin() {
 		}
     }
 		
-    $of_page = add_submenu_page('themes.php', $themename, 'Theme Options', 8, 'optionsframework','optionsframework_options_page'); // Default
+    $of_page = add_submenu_page('themes.php', $themename, 'Theme Options', 'edit_theme_options', 'optionsframework','optionsframework_options_page'); // Default
 
 	
 	// Add framework functionaily to the head individually
@@ -137,7 +137,7 @@ function optionsframework_options_page(){
     <img style="display:none" src="<?php echo bloginfo('stylesheet_directory'); ?>/functions/images/loading-bottom.gif" class="ajax-loading-img ajax-loading-img-bottom" alt="Working..." />
     <input type="submit" value="Save All Changes" class="button-primary" />
   </form>
-  <form action="<?php echo wp_specialchars( $_SERVER['REQUEST_URI'] ) ?>" method="post" style="display:inline" id="ofform-reset">
+  <form action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ) ?>" method="post" style="display:inline" id="ofform-reset">
     <span class="submit-footer-reset">
     <input name="reset" type="submit" value="Reset Options" class="button submit-button reset-button" onclick="return confirm('Click OK to reset. Any settings will be lost!');" />
     <input type="hidden" name="of_save" value="reset" />
@@ -907,7 +907,7 @@ function optionsframework_machine($options) {
 		
 		case "images":
 			$i = 0;
-			$select_value = get_settings( $value['id']);
+			$select_value = get_option( $value['id']);
 				   
 			foreach ($value['options'] as $key => $option) 
 			 { 
