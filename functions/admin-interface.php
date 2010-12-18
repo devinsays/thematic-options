@@ -7,7 +7,7 @@
 /*-----------------------------------------------------------------------------------*/
 
 // Load static framework options pages 
-$functions_path = STYLESHEETPATH . '/functions/';
+$functions_path = OF_FILEPATH . '/functions/';
 
 function optionsframework_add_admin() {
 
@@ -26,7 +26,6 @@ function optionsframework_add_admin() {
     }
 		
     $of_page = add_submenu_page('themes.php', $themename, 'Theme Options', 'edit_theme_options', 'optionsframework','optionsframework_options_page'); // Default
-
 	
 	// Add framework functionaily to the head individually
 	add_action("admin_print_scripts-$of_page", 'of_load_only');
@@ -45,7 +44,6 @@ function of_reset_options($options,$page = ''){
 	$count = 0;
 	
 	$excludes = array( 'blogname' , 'blogdescription' );
-	
 	
 	foreach($options as $option){
 			
@@ -161,16 +159,16 @@ function of_load_only() {
 	add_action('admin_head', 'of_admin_head');
 	
 	wp_enqueue_script('jquery-ui-core');
-	wp_register_script('jquery-input-mask', get_bloginfo('stylesheet_directory').'/functions/js/jquery.maskedinput-1.2.2.js', array( 'jquery' ));
+	wp_register_script('jquery-input-mask', OF_DIRECTORY.'/functions/js/jquery.maskedinput-1.2.2.js', array( 'jquery' ));
 	wp_enqueue_script('jquery-input-mask');
 	
 	function of_admin_head() { 
 			
-		echo '<link rel="stylesheet" type="text/css" href="'.get_bloginfo('stylesheet_directory').'/functions/admin-style.css" media="screen" />';
+		echo '<link rel="stylesheet" type="text/css" href="'.OF_DIRECTORY.'/functions/admin-style.css" media="screen" />';
 		
 		 // COLOR Picker ?>
-<link rel="stylesheet" media="screen" type="text/css" href="<?php echo get_bloginfo('stylesheet_directory'); ?>/functions/css/colorpicker.css" />
-<script type="text/javascript" src="<?php echo get_bloginfo('stylesheet_directory'); ?>/functions/js/colorpicker.js"></script>
+<link rel="stylesheet" media="screen" type="text/css" href="<?php echo OF_DIRECTORY; ?>/functions/css/colorpicker.css" />
+<script type="text/javascript" src="<?php echo OF_DIRECTORY; ?>/functions/js/colorpicker.js"></script>
 <script type="text/javascript" language="javascript">
 		jQuery(document).ready(function(){
 			
@@ -217,7 +215,7 @@ function of_load_only() {
 <?php
 		//AJAX Upload
 		?>
-<script type="text/javascript" src="<?php echo get_bloginfo('stylesheet_directory'); ?>/functions/js/ajaxupload.js"></script>
+<script type="text/javascript" src="<?php echo OF_DIRECTORY; ?>/functions/js/ajaxupload.js"></script>
 <script type="text/javascript">
 			jQuery(document).ready(function(){
 			

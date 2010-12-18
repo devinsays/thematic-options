@@ -14,7 +14,7 @@ $shortname = "of";
 global $of_options;
 $of_options = get_option('of_options');
 
-$GLOBALS['template_path'] = get_bloginfo('stylesheet_directory');
+$GLOBALS['template_path'] = OF_DIRECTORY;
 
 //Access the WordPress Categories via an Array
 $of_categories = array();  
@@ -41,7 +41,7 @@ $options_select = array("one","two","three","four","five");
 $options_radio = array("one" => "One","two" => "Two","three" => "Three","four" => "Four","five" => "Five"); 
 
 //Stylesheets Reader
-$alt_stylesheet_path = STYLESHEETPATH . '/styles/';
+$alt_stylesheet_path = OF_DIRECTORY . '/styles/';
 $alt_stylesheets = array();
 
 if ( is_dir($alt_stylesheet_path) ) {

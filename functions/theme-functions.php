@@ -26,7 +26,7 @@ if (!function_exists('optionsframework_wp_head')) {
 		 if ($layout == '') {
 		 	$layout = '2c-r-fixed';
 		 }
-	     echo '<link href="'. get_bloginfo('stylesheet_directory') .'/layouts/'. $layout . '.css" rel="stylesheet" type="text/css" />'."\n";
+	     echo '<link href="'. OF_DIRECTORY .'/layouts/'. $layout . '.css" rel="stylesheet" type="text/css" />'."\n";
 	    
 		//Styles
 		 if(!isset($_REQUEST['style']))
@@ -35,13 +35,13 @@ if (!function_exists('optionsframework_wp_head')) {
 	     	$style = $_REQUEST['style'];
 	     if ($style != '') {
 			  $GLOBALS['stylesheet'] = $style;
-	          echo '<link href="'. get_bloginfo('stylesheet_directory') .'/styles/'. $GLOBALS['stylesheet'] . '.css" rel="stylesheet" type="text/css" />'."\n"; 
+	          echo '<link href="'. OF_DIRECTORY .'/styles/'. $GLOBALS['stylesheet'] . '.css" rel="stylesheet" type="text/css" />'."\n"; 
 	     } else { 
 	          $GLOBALS['stylesheet'] = get_option('of_alt_stylesheet');
 	          if($GLOBALS['stylesheet'] != '')
-	               echo '<link href="'. get_bloginfo('stylesheet_directory') .'/styles/'. $GLOBALS['stylesheet'] .'" rel="stylesheet" type="text/css" />'."\n";         
+	               echo '<link href="'. OF_DIRECTORY .'/styles/'. $GLOBALS['stylesheet'] .'" rel="stylesheet" type="text/css" />'."\n";         
 	          else
-	               echo '<link href="'. get_bloginfo('stylesheet_directory') .'/styles/default.css" rel="stylesheet" type="text/css" />'."\n";         		  
+	               echo '<link href="'. OF_DIRECTORY .'/styles/default.css" rel="stylesheet" type="text/css" />'."\n";         		  
 	     }       
 			
 		// This prints out the custom css and specific styling options
