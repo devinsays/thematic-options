@@ -6,15 +6,9 @@
 /* Options Framework Admin Interface - optionsframework_add_admin */
 /*-----------------------------------------------------------------------------------*/
 
-// Load static framework options pages 
-$functions_path = STYLESHEETPATH . '/admin/';
-
 function optionsframework_add_admin() {
 
     global $query_string;
-    
-    $themename =  get_option('of_themename');      
-    $shortname =  get_option('of_shortname'); 
    
     if ( isset($_REQUEST['page']) && $_REQUEST['page'] == 'optionsframework' ) {
 		if (isset($_REQUEST['of_save']) && 'reset' == $_REQUEST['of_save']) {
@@ -25,8 +19,7 @@ function optionsframework_add_admin() {
 		}
     }
 		
-    $of_page = add_submenu_page('themes.php', $themename, 'Theme Options', 'edit_theme_options', 'optionsframework','optionsframework_options_page'); // Default
-
+    $of_page = add_submenu_page('themes.php', THEMENAME, 'Theme Options', 'edit_theme_options', 'optionsframework','optionsframework_options_page'); // Default
 	
 	// Add framework functionaily to the head individually
 	add_action("admin_print_scripts-$of_page", 'of_load_only');
@@ -45,7 +38,6 @@ function of_reset_options($options,$page = ''){
 	$count = 0;
 	
 	$excludes = array( 'blogname' , 'blogdescription' );
-	
 	
 	foreach($options as $option){
 			
@@ -101,8 +93,7 @@ function of_reset_options($options,$page = ''){
 /*-----------------------------------------------------------------------------------*/
 
 function optionsframework_options_page(){
-    $options =  get_option('of_template');      
-    $themename =  get_option('of_themename');
+    $options =  get_option('of_template');
 ?>
 
 <div class="wrap" id="of_container">
@@ -115,7 +106,7 @@ function optionsframework_options_page(){
   <form action="" enctype="multipart/form-data" id="ofform">
     <div id="header">
       <div class="logo">
-        <h2><?php echo $themename; ?></h2>
+        <h2><?php echo THEMENAME; ?></h2>
       </div>
       <div class="icon-option"> </div>
       <div class="clear"></div>
@@ -161,8 +152,10 @@ function of_load_only() {
 	add_action('admin_head', 'of_admin_head');
 	
 	wp_enqueue_script('jquery-ui-core');
-	wp_register_script('jquery-input-mask', get_bloginfo('stylesheet_directory').'/admin/js/jquery.maskedinput-1.2.2.js', array( 'jquery' ));
+	wp_register_script('jquery-input-mask', ADMIN_DIR .'js/jquery.maskedinput-1.2.2.js', array( 'jquery' ));
 	wp_enqueue_script('jquery-input-mask');
+	wp_enqueue_script('color-picker', ADMIN_DIR .'js/colorpicker.js', array('jquery'));
+	wp_enqueue_script('ajaxupload', ADMIN_DIR .'js/ajaxupload.js', array('jquery'));
 	
 	function of_admin_head() { 
 			
@@ -170,7 +163,6 @@ function of_load_only() {
 		
 		 // COLOR Picker ?>
 <link rel="stylesheet" media="screen" type="text/css" href="<?php echo get_bloginfo('stylesheet_directory'); ?>/admin/css/colorpicker.css" />
-<script type="text/javascript" src="<?php echo get_bloginfo('stylesheet_directory'); ?>/admin/js/colorpicker.js"></script>
 <script type="text/javascript" language="javascript">
 		jQuery(document).ready(function(){
 			
@@ -214,11 +206,8 @@ function of_load_only() {
 		});
 		
 		</script>
-<?php
-		//AJAX Upload
-		?>
-<script type="text/javascript" src="<?php echo get_bloginfo('stylesheet_directory'); ?>/admin/js/ajaxupload.js"></script>
-<script type="text/javascript">
+
+		<script type="text/javascript">
 			jQuery(document).ready(function(){
 			
 			var flip = 0;
@@ -559,28 +548,19 @@ function of_ajax_callback() {
 					elseif($type == 'typography'){
 							
 						$typography_array = array();	
-						
 						$typography_array['size'] = $output[$option_array['id'] . '_size'];
-							
 						$typography_array['face'] = stripslashes($output[$option_array['id'] . '_face']);
-							
 						$typography_array['style'] = $output[$option_array['id'] . '_style'];
-							
 						$typography_array['color'] = $output[$option_array['id'] . '_color'];
-							
 						update_option($id,$typography_array);
 							
 					}
 					elseif($type == 'border'){
 							
 						$border_array = array();	
-						
 						$border_array['width'] = $output[$option_array['id'] . '_width'];
-							
 						$border_array['style'] = $output[$option_array['id'] . '_style'];
-							
 						$border_array['color'] = $output[$option_array['id'] . '_color'];
-							
 						update_option($id,$border_array);
 							
 					}
@@ -596,8 +576,6 @@ function of_ajax_callback() {
   die();
 
 }
-
-
 
 /*-----------------------------------------------------------------------------------*/
 /* Generates The Options Within the Panel - optionsframework_machine */
@@ -714,7 +692,6 @@ function optionsframework_machine($options) {
 				   
 			 foreach ($value['options'] as $key => $option) 
 			 { 
-
 				 $checked = '';
 				   if($select_value != '') {
 						if ( $select_value == $key) { $checked = ' checked'; } 
@@ -929,7 +906,6 @@ function optionsframework_machine($options) {
 				$output .= '<div class="of-radio-img-label">'. $key .'</div>';
 				$output .= '<img src="'.$option.'" alt="" class="of-radio-img-img '. $selected .'" onClick="document.getElementById(\'of-radio-img-'. $value['id'] . $i.'\').checked = true;" />';
 				$output .= '</span>';
-				
 			}
 		
 		break; 
@@ -940,7 +916,6 @@ function optionsframework_machine($options) {
 		break;                                   
 		
 		case "heading":
-			
 			if($counter >= 2){
 			   $output .= '</div>'."\n";
 			}
@@ -991,10 +966,6 @@ function optionsframework_machine($options) {
 /*-----------------------------------------------------------------------------------*/
 
 function optionsframework_uploader_function($id,$std,$mod){
-
-    //$uploader .= '<input type="file" id="attachement_'.$id.'" name="attachement_'.$id.'" class="upload_input"></input>';
-    //$uploader .= '<span class="submit"><input name="save" type="submit" value="Upload" class="button upload_save" /></span>';
-    
 	$uploader = '';
     $upload = get_option($id);
 	
@@ -1016,8 +987,7 @@ function optionsframework_uploader_function($id,$std,$mod){
     	$uploader .= '<img class="of-option-image" id="image_'.$id.'" src="'.$upload.'" alt="" />';
     	$uploader .= '</a>';
 		}
-	$uploader .= '<div class="clear"></div>' . "\n"; 
-
+	$uploader .= '<div class="clear"></div>' . "\n";
 
 return $uploader;
 }
