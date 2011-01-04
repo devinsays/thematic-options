@@ -23,6 +23,7 @@ function optionsframework_add_admin() {
 	
 	// Add framework functionaily to the head individually
 	add_action("admin_print_scripts-$of_page", 'of_load_only');
+	add_action("admin_print_styles-$of_page",'of_style_only');
 } 
 
 add_action('admin_menu', 'optionsframework_add_admin');
@@ -142,6 +143,16 @@ function optionsframework_options_page(){
 <?php
 }
 
+/*-----------------------------------------------------------------------------------*/
+/* Load required styles for Options Page - of_style_only */
+/*-----------------------------------------------------------------------------------*/
+
+function of_style_only(){
+	wp_enqueue_style('admin-style', ADMIN_DIR . 'admin-style.css');
+	wp_enqueue_style('color-picker', ADMIN_DIR . 'css/colorpicker.css');
+}	
+
+
 
 /*-----------------------------------------------------------------------------------*/
 /* Load required javascripts for Options Page - of_load_only */
@@ -157,13 +168,9 @@ function of_load_only() {
 	wp_enqueue_script('color-picker', ADMIN_DIR .'js/colorpicker.js', array('jquery'));
 	wp_enqueue_script('ajaxupload', ADMIN_DIR .'js/ajaxupload.js', array('jquery'));
 	
-	function of_admin_head() { 
-			
-		echo '<link rel="stylesheet" type="text/css" href="'.get_bloginfo('stylesheet_directory').'/admin/admin-style.css" media="screen" />';
-		
-		 // COLOR Picker ?>
-<link rel="stylesheet" media="screen" type="text/css" href="<?php echo get_bloginfo('stylesheet_directory'); ?>/admin/css/colorpicker.css" />
-<script type="text/javascript" language="javascript">
+	function of_admin_head() { ?>
+    
+	<script type="text/javascript" language="javascript">
 		jQuery(document).ready(function(){
 			
 			
@@ -569,8 +576,7 @@ function of_ajax_callback() {
 						update_option($id,stripslashes($new_value));
 					}
 				}
-			}	
-	
+			}
 	}
 
   die();
