@@ -5,17 +5,6 @@ add_action('init','of_options');
 if (!function_exists('of_options')) {
 function of_options(){
 	
-// VARIABLES
-$themename = get_theme_data(STYLESHEETPATH . '/style.css');
-$themename = $themename['Name'];
-$shortname = "of";
-
-// Populate OptionsFramework option in array for use in theme
-global $of_options;
-$of_options = get_option('of_options');
-
-$GLOBALS['template_path'] = get_bloginfo('stylesheet_directory');
-
 //Access the WordPress Categories via an Array
 $of_categories = array();  
 $of_categories_obj = get_categories('hide_empty=0');
@@ -30,18 +19,12 @@ foreach ($of_pages_obj as $of_page) {
     $of_pages[$of_page->ID] = $of_page->post_name; }
 $of_pages_tmp = array_unshift($of_pages, "Select a page:");       
 
-// Image Alignment radio box
-$options_thumb_align = array("alignleft" => "Left","alignright" => "Right","aligncenter" => "Center"); 
-
-// Image Links to Options
-$options_image_link_to = array("image" => "The Image","post" => "The Post"); 
-
 //Testing 
-$options_select = array("one","two","three","four","five"); 
-$options_radio = array("one" => "One","two" => "Two","three" => "Three","four" => "Four","five" => "Five"); 
+$my_options_select = array("one","two","three","four","five"); 
+$my_options_radio = array("one" => "One","two" => "Two","three" => "Three","four" => "Four","five" => "Five"); 
 
 //Stylesheets Reader
-$alt_stylesheet_path = STYLESHEETPATH . '/styles/';
+$alt_stylesheet_path = STYLES;
 $alt_stylesheets = array();
 
 if ( is_dir($alt_stylesheet_path) ) {
@@ -54,6 +37,10 @@ if ( is_dir($alt_stylesheet_path) ) {
     }
 }
 
+/*-----------------------------------------------------------------------------------*/
+/* TO DO: Add options/functions that use these */
+/*-----------------------------------------------------------------------------------*/
+
 //More Options
 $uploads_arr = wp_upload_dir();
 $all_uploads_path = $uploads_arr['path'];
@@ -62,160 +49,184 @@ $other_entries = array("Select a number:","1","2","3","4","5","6","7","8","9","1
 $body_repeat = array("no-repeat","repeat-x","repeat-y","repeat");
 $body_pos = array("top left","top center","top right","center left","center center","center right","bottom left","bottom center","bottom right");
 
-// Set the Options Array
-$options = array();
+// Image Alignment radio box
+$my_options_thumb_align = array("alignleft" => "Left","alignright" => "Right","aligncenter" => "Center"); 
 
-$options[] = array( "name" => "General Settings",
+// Image Links to Options
+$my_options_image_link_to = array("image" => "The Image","post" => "The Post"); 
+
+
+/*-----------------------------------------------------------------------------------*/
+/* The Options Array */
+/*-----------------------------------------------------------------------------------*/
+
+// Set the Options Array
+global $my_options;
+$my_options = array();
+
+$my_options[] = array( "name" => "General Settings",
                     "type" => "heading");
 					
-
-$options[] = array( "name" => "Custom Logo",
+$my_options[] = array( "name" => "Custom Logo",
 					"desc" => "Upload a logo for your theme, or specify the image address of your online logo. (http://yoursite.com/logo.png)",
-					"id" => $shortname."_logo",
+					"id" => "logo",
 					"std" => "",
 					"type" => "upload");
 					
-$url =  get_bloginfo('stylesheet_directory') . '/admin/images/';
-$options[] = array( "name" => "Main Layout",
-					"desc" => "Select main content and sidebar alignment. Choose between 2 or 3 column layout.",
-					"id" => $shortname."_layout",
-					"std" => "2c-l-fixed",
+$url =  ADMIN . 'images/';
+$my_options[] = array( "name" => "Main Layout",
+					"desc" => "Select main content and sidebar alignment. Choose between 1, 2 or 3 column layout.",
+					"id" => "layout",
+					"std" => "2c-l-fixed.css",
 					"type" => "images",
 					"options" => array(
-						'2c-r-fixed' => $url . '2cr.png',
-						'2c-l-fixed' => $url . '2cl.png',
-						'3c-fixed' => $url . '3cm.png',
-						'3c-r-fixed' => $url . '3cr.png')
+						'1col-fixed.css' => $url . '1col.png',
+						'2c-r-fixed.css' => $url . '2cr.png',
+						'2c-l-fixed.css' => $url . '2cl.png',
+						'3c-fixed.css' => $url . '3cm.png',
+						'3c-r-fixed.css' => $url . '3cr.png')
 					);
-$options[] = array( "name" => "Custom Favicon",
+$my_options[] = array( "name" => "Custom Favicon",
 					"desc" => "Upload a 16px x 16px Png/Gif image that will represent your website's favicon.",
-					"id" => $shortname."_custom_favicon",
+					"id" => "custom_favicon",
 					"std" => "",
 					"type" => "upload"); 
                                                
-$options[] = array( "name" => "Tracking Code",
+$my_options[] = array( "name" => "Tracking Code",
 					"desc" => "Paste your Google Analytics (or other) tracking code here. This will be added into the footer template of your theme.",
-					"id" => $shortname."_google_analytics",
+					"id" => "google_analytics",
 					"std" => "",
 					"type" => "textarea");
 
-$options[] = array( "name" => "Footer Text",
+$my_options[] = array( "name" => "Footer Text",
                     "desc" => "You can use the following shortcodes in your footer text: [wp-link] [theme-link] [loginout-link] [blog-title] [blog-link] [the-year]",
-                    "id" => $shortname."_footer_text",
+                    "id" => "footer_text",
                     "std" => "Powered by [wp-link]. Built on the [theme-link].",
                     "type" => "textarea");                                                          
     
-$options[] = array( "name" => "Styling Options",
+$my_options[] = array( "name" => "Styling Options",
 					"type" => "heading");
 					
-$options[] = array( "name" => "Theme Stylesheet",
+$my_options[] = array( "name" => "Theme Stylesheet",
 					"desc" => "Select your themes alternative color scheme.",
-					"id" => $shortname."_alt_stylesheet",
+					"id" => "alt_stylesheet",
 					"std" => "default.css",
 					"type" => "select",
 					"options" => $alt_stylesheets); 
 					
-$options[] = array( "name" =>  "Body Background Color",
+$my_options[] = array( "name" =>  "Body Background Color",
 					"desc" => "Pick a background color for the theme (default: #fff).",
-					"id" => $shortname."_body_background",
+					"id" => "body_background",
 					"std" => "",
 					"type" => "color");
 					
-$options[] = array( "name" =>  "Header Background Color",
+$my_options[] = array( "name" =>  "Header Background Color",
 					"desc" => "Pick a background color for the header (default: #fff).",
-					"id" => $shortname."_header_background",
+					"id" => "header_background",
 					"std" => "",
 					"type" => "color");   
 
-$options[] = array( "name" =>  "Footer Background Color",
+$my_options[] = array( "name" =>  "Footer Background Color",
 					"desc" => "Pick a background color for the footer (default: #fff).",
-					"id" => $shortname."_footer_background",
+					"id" => "footer_background",
 					"std" => "",
 					"type" => "color");
 					
-$options[] = array( "name" => "Custom CSS",
-                    "desc" => "Quickly add some CSS to your theme by adding it to this block.",
-                    "id" => $shortname."_custom_css",
-                    "std" => "",
-                    "type" => "textarea");
-					
-$options[] = array( "name" => "Example Options",
-					"type" => "heading"); 	   
-
-$options[] = array( "name" => "Typograpy",
-					"desc" => "This is a typographic specific option.",
-					"id" => $shortname."_typograpy",
-					"std" => array('size' => '16','unit' => 'em','face' => 'verdana','style' => 'bold italic','color' => '#123456'),
+$my_options[] = array( "name" => "Body Font",
+					"desc" => "Specify the body font properties",
+					"id" => "body_font",
+					"std" => array('size' => '12px','face' => 'arial','style' => 'normal','color' => '#000000'),
 					"type" => "typography");  
 					
-$options[] = array( "name" => "Border",
+$my_options[] = array( "name" => "Custom CSS",
+                    "desc" => "Quickly add some CSS to your theme by adding it to this block.",
+                    "id" => "custom_css",
+                    "std" => "",
+                    "type" => "textarea");
+
+$my_options[] = array( "name" => "Example Options",
+					"type" => "heading"); 	   
+
+$my_options[] = array( "name" => "Typography",
+					"desc" => "This is a typographic specific option.",
+					"id" => "typography",
+					"std" => array('size' => '12px','face' => 'verdana','style' => 'bold italic','color' => '#123456'),
+					"type" => "typography");  
+					
+$my_options[] = array( "name" => "Border",
 					"desc" => "This is a border specific option.",
-					"id" => $shortname."_border",
+					"id" => "border",
 					"std" => array('width' => '2','style' => 'dotted','color' => '#444444'),
 					"type" => "border");      
 					
-$options[] = array( "name" => "Colorpicker",
+$my_options[] = array( "name" => "Colorpicker",
 					"desc" => "No color selected.",
-					"id" => $shortname."_example_colorpicker",
+					"id" => "example_colorpicker",
 					"std" => "",
 					"type" => "color"); 
 					
-$options[] = array( "name" => "Colorpicker (default #2098a8)",
+$my_options[] = array( "name" => "Colorpicker (default #2098a8)",
 					"desc" => "Color selected.",
-					"id" => $shortname."_example_colorpicker_2",
+					"id" => "example_colorpicker_2",
 					"std" => "#2098a8",
 					"type" => "color");          
-                    
-$options[] = array( "name" => "Upload Basic",
+                  
+$my_options[] = array( "name" => "Upload Basic",
 					"desc" => "An image uploader without text input.",
-					"id" => $shortname."_uploader",
+					"id" => "uploader",
 					"std" => "",
-					"type" => "upload_min");     
-                                    
-$options[] = array( "name" => "Input Text",
+					"type" => "upload_min");  
+					
+$my_options[] = array( "name" => "Upload",
+					"desc" => "An image uploader with text input.",
+					"id" => "uploader2",
+					"std" => "",
+					"type" => "upload");     
+                                
+$my_options[] = array( "name" => "Input Text",
 					"desc" => "A text input field.",
-					"id" => $shortname."_test_text",
+					"id" => "test_text",
 					"std" => "Default Value",
 					"type" => "text"); 
-                                        
-$options[] = array( "name" => "Input Checkbox (false)",
+                                   
+$my_options[] = array( "name" => "Input Checkbox (false)",
 					"desc" => "Example checkbox with false selected.",
-					"id" => $shortname."_example_checkbox_false",
-					"std" => "false",
+					"id" => "example_checkbox_false",
+					"std" => false,
 					"type" => "checkbox");    
                                         
-$options[] = array( "name" => "Input Checkbox (true)",
+$my_options[] = array( "name" => "Input Checkbox (true)",
 					"desc" => "Example checkbox with true selected.",
-					"id" => $shortname."_example_checkbox_true",
-					"std" => "true",
+					"id" => "example_checkbox_true",
+					"std" => true,
 					"type" => "checkbox"); 
-                                                                               
-$options[] = array( "name" => "Input Select Small",
+                                                                             
+$my_options[] = array( "name" => "Input Select Small",
 					"desc" => "Small Select Box.",
-					"id" => $shortname."_example_select",
+					"id" => "example_select",
 					"std" => "three",
 					"type" => "select",
 					"class" => "mini", //mini, tiny, small
-					"options" => $options_select);                                                          
+					"options" => $my_options_select);                                                          
 
-$options[] = array( "name" => "Input Select Wide",
+$my_options[] = array( "name" => "Input Select Wide",
 					"desc" => "A wider select box.",
-					"id" => $shortname."_example_select_wide",
+					"id" => "example_select_wide",
 					"std" => "two",
 					"type" => "select2",
-					"options" => $options_radio);    
+					"options" => $my_options_radio);    
 
-$options[] = array( "name" => "Input Radio (one)",
+$my_options[] = array( "name" => "Input Radio (one)",
 					"desc" => "Radio select with default of 'one'.",
-					"id" => $shortname."_example_radio",
+					"id" => "example_radio",
 					"std" => "one",
 					"type" => "radio",
-					"options" => $options_radio);
+					"options" => $my_options_radio);
 					
-$url =  get_bloginfo('stylesheet_directory') . '/admin/images/';
-$options[] = array( "name" => "Image Select",
+$url =  ADMIN . 'images/';
+$my_options[] = array( "name" => "Image Select",
 					"desc" => "Use radio buttons as images.",
-					"id" => $shortname."_images",
+					"id" => "images",
 					"std" => "",
 					"type" => "images",
 					"options" => array(
@@ -223,30 +234,26 @@ $options[] = array( "name" => "Image Select",
 						'accept.css' => $url . 'accept.png',
 						'wrench.css' => $url . 'wrench.png'));
                                         
-$options[] = array( "name" => "Textarea",
+$my_options[] = array( "name" => "Textarea",
 					"desc" => "Textarea description.",
-					"id" => $shortname."_example_textarea",
+					"id" => "example_textarea",
 					"std" => "Default Text",
 					"type" => "textarea"); 
-                                        
-$options[] = array( "name" => "Multicheck",
+                                       
+$my_options[] = array( "name" => "Multicheck",
 					"desc" => "Multicheck description.",
-					"id" => $shortname."_example_multicheck",
-					"std" => "two",
-					"type" => "multicheck",
-					"options" => $options_radio);
+					"id" => "example_multicheck",
+					"std" => array("three","two"),
+				  	"type" => "multicheck",
+					"options" => $my_options_radio);
                                         
-$options[] = array( "name" => "Select a Category",
+$my_options[] = array( "name" => "Select a Category",
 					"desc" => "A list of all the categories being used on the site.",
-					"id" => $shortname."_example_category",
+					"id" => "example_category",
 					"std" => "Select a category:",
 					"type" => "select",
 					"options" => $of_categories);
-
-update_option('of_template',$options); 					  
-update_option('of_themename',$themename);   
-update_option('of_shortname',$shortname);
-
-}
+	
+	}
 }
 ?>

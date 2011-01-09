@@ -2,6 +2,10 @@
 
 /* These are functions specific to these options settings and this theme */
 
+// Grab all the options data
+	global $data;
+	$data = get_option(OPTIONS);
+	
 /*-----------------------------------------------------------------------------------*/
 /* Remove the Options Panel that Thematic comes with by Default
 /*-----------------------------------------------------------------------------------*/
@@ -9,6 +13,7 @@
 function remove_thematic_panel() {
   remove_action('admin_menu' , 'mytheme_add_admin');
 }
+
 add_action('init', 'remove_thematic_panel');
 
 /*-----------------------------------------------------------------------------------*/
@@ -18,62 +23,70 @@ add_action('init', 'remove_thematic_panel');
 // This sets up the layouts and styles selected from the options panel
 
 if (!function_exists('optionsframework_wp_head')) {
-	function optionsframework_wp_head() { 
-		$shortname =  get_option('of_shortname');
-	
-		//Layouts
-		 $layout = get_option($shortname .'_layout');
-		 if ($layout == '') {
-		 	$layout = '2c-r-fixed';
-		 }
-	     echo '<link href="'. get_bloginfo('stylesheet_directory') .'/layouts/'. $layout . '.css" rel="stylesheet" type="text/css" />'."\n";
-	    
-		//Styles
-		 if(!isset($_REQUEST['style']))
-		 	$style = ''; 
-		 else 
-	     	$style = $_REQUEST['style'];
-	     if ($style != '') {
-			  $GLOBALS['stylesheet'] = $style;
-	          echo '<link href="'. get_bloginfo('stylesheet_directory') .'/styles/'. $GLOBALS['stylesheet'] . '.css" rel="stylesheet" type="text/css" />'."\n"; 
-	     } else { 
-	          $GLOBALS['stylesheet'] = get_option('of_alt_stylesheet');
-	          if($GLOBALS['stylesheet'] != '')
-	               echo '<link href="'. get_bloginfo('stylesheet_directory') .'/styles/'. $GLOBALS['stylesheet'] .'" rel="stylesheet" type="text/css" />'."\n";         
-	          else
-	               echo '<link href="'. get_bloginfo('stylesheet_directory') .'/styles/default.css" rel="stylesheet" type="text/css" />'."\n";         		  
-	     }       
-			
-		// This prints out the custom css and specific styling options
-		of_head_css();
+	function optionsframework_wp_head() {
+
+	global $data;	
+
+	// Layouts
+	$layout = $data['layout'];
+	if ($layout == '') {
+		 	$layout = '2c-r-fixed.css';
+	}
+	wp_register_style('layout', LAYOUTS . $layout );
+    wp_enqueue_style('layout');
+		
+	// Kills sidebar if single column layout is selected
+		if ($layout == '1col-fixed.css'){
+			add_action('thematic_sidebar', 'kill_sidebar');
+		}
+		
+	// Alt Styles
+	$alt_style = $data['alt_stylesheet'];
+		if ($alt_style == '') {
+		 	$alt_style = 'default.css';
+		}
+	wp_register_style('alt_style',STYLES . $alt_style);
+    wp_enqueue_style('alt_style');
 	}
 }
 
-add_action('wp_head', 'optionsframework_wp_head');
+add_action('wp_print_styles', 'optionsframework_wp_head');
 
+function kill_sidebar() {
+	return FALSE;
+}
 
 /*-----------------------------------------------------------------------------------*/
 /* Output CSS from standarized options */
 /*-----------------------------------------------------------------------------------*/
 
 function of_head_css() {
+		global $data;
 
-		$shortname =  get_option('of_shortname'); 
 		$output = '';
 		
-		if ($body_color = get_option($shortname . '_body_background') ) {
+		if ($body_color = $data['body_background'] ) {
 			$output .= "body {background:" . $body_color .";}\n";
 		}
 		
-		if ($link_color = get_option($shortname .'_header_background') ) {
-			$output .= "#header {background:" . $link_color .";}\n";
+		if ($header_color = $data['header_background'] ) {
+			$output .= "#header {background:" . $header_color .";}\n";
 		}
 		
-		if ($link_hover_color = get_option($shortname .'_footer_background') ) {
-			$output .= "#footer {background:" . $link_hover_color .";}\n";
+		if ($footer_color = $data['footer_background'] ) {
+			$output .= "#footer {background:" . $footer_color .";}\n";
 		}
 		
-		$custom_css = get_option('of_custom_css');
+		//sample typography
+		if ($typography = $data['body_font'] ) {
+			$output .= "body {\n     font-face:" . of_font_stack($typography['face']) . "; \n";
+			$output .= "     font-size:" . $typography['size'] . "; \n";
+			$output .= "     font-style:".$typography['style'] . "; \n";
+			$output .= "     color: ".$typography['color'] . "; \n";
+			$output .= "}\n";
+		}
+		
+		$custom_css = $data['custom_css'];
 		
 		if ($custom_css <> '') {
 			$output .= $custom_css . "\n";
@@ -86,18 +99,52 @@ function of_head_css() {
 		}
 	
 }
+add_action('wp_head', 'of_head_css');
+
+function of_font_stack($font){
+	$stack = '';
+	
+	switch ( $font ) {
+	
+		case 'arial':
+			$stack .= 'Arial, sans-serif';
+		break;
+		case 'verdana':
+			$stack .= 'Verdana, "Verdana Ref", sans-serif';
+		break;
+		case 'trebuchet':
+			$stack .= '"Trebuchet MS", Verdana, "Verdana Ref", sans-serif';
+		break;
+		case 'georgia':
+			$stack .= 'Georgia, serif';
+		break;
+		case 'times':
+			$stack .= 'Times, "Times New Roman", serif';
+		break;
+		case 'tahoma':
+			$stack .= 'Tahoma,Geneva,Verdana,sans-serif';
+		break;
+		case 'palatino':
+			$stack .= '"Palatino Linotype", Palatino, Palladio, "URW Palladio L", "Book Antiqua", Baskerville, "Bookman Old Style", "Bitstream Charter", "Nimbus Roman No9 L", Garamond, "Apple Garamond", "ITC Garamond Narrow", "New Century Schoolbook", "Century Schoolbook", "Century Schoolbook L", Georgia, serif';
+		break;
+		case 'helvetica':
+			$stack .= '"Helvetica Neue", Helvetica, Arial, sans-serif';
+		break;
+	}
+	return $stack;
+}
 
 /*-----------------------------------------------------------------------------------*/
 /* Add Favicon
 /*-----------------------------------------------------------------------------------*/
 
 function childtheme_favicon() {
-		$shortname =  get_option('of_shortname'); 
-		if (get_option($shortname . '_custom_favicon') != '') {
-	        echo '<link rel="shortcut icon" href="'.  get_option('of_custom_favicon')  .'"/>'."\n";
+		global $data;
+		if ($data['custom_favicon'] != '') {
+	        echo '<link rel="shortcut icon" href="'.  $data['custom_favicon']  .'"/>'."\n";
 	    }
 		else { ?>
-			<link rel="shortcut icon" href="<?php echo bloginfo('stylesheet_directory') ?>/admin/images/favicon.ico" />
+			<link rel="shortcut icon" href="<?php echo ADMIN ?>images/favicon.ico" />
 <?php }
 }
 
@@ -110,8 +157,8 @@ add_action('wp_head', 'childtheme_favicon');
 // If a logo is uploaded, unhook the page title and description
 
 function add_childtheme_logo() {
-	$shortname =  get_option('of_shortname');
-	$logo = get_option($shortname . '_logo');
+	global $data;
+	$logo = $data['logo'];
 	if (!empty($logo)) {
 		remove_action('thematic_header','thematic_blogtitle', 3);
 		remove_action('thematic_header','thematic_blogdescription',5);
@@ -123,8 +170,8 @@ add_action('init','add_childtheme_logo');
 // Displays the logo
 
 function childtheme_logo() {
-	$shortname =  get_option('of_shortname');
-	$logo = get_option($shortname . '_logo');
+	global $data;
+	$logo = $data['logo'];
     $heading_tag = ( is_home() || is_front_page() ) ? 'h1' : 'div';?>
     <<?php echo $heading_tag; ?> id="site-title">
 	<a href="<?php bloginfo('url'); ?>" title="<?php bloginfo('description'); ?>">
@@ -139,8 +186,8 @@ function childtheme_logo() {
 /*-----------------------------------------------------------------------------------*/
 
 function childtheme_footer($thm_footertext) {
-	$shortname =  get_option('of_shortname');
-	if ($footertext = get_option($shortname . '_footer_text'))
+	global $data;
+	if ($footertext = $data['footer_text'])
     	return $footertext;
 }
 
@@ -150,9 +197,9 @@ add_filter('thematic_footertext', 'childtheme_footer');
 /* Show analytics code in footer */
 /*-----------------------------------------------------------------------------------*/
 
-function childtheme_analytics(){
-	$shortname =  get_option('of_shortname');
-	$output = get_option($shortname . '_google_analytics');
+function childtheme_analytics() {
+	global $data;
+	$output = $data['google_analytics'];
 	if ( $output <> "" ) 
 		echo stripslashes($output) . "\n";
 }
