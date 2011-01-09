@@ -465,10 +465,6 @@ add_action('wp_ajax_of_ajax_post_action', 'of_ajax_callback');
 
 function of_ajax_callback() {
 	global $wpdb; // this is how you get access to the database
-	
-	$nonce=$_POST['security']; // nonce for security
-	if (! wp_verify_nonce($nonce, 'of_ajax_nonce') ) die('-1'); 
-	
 		
 	$save_type = $_POST['type'];
 	//Uploads

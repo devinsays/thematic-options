@@ -20,12 +20,12 @@ define('OPTIONS', 'of_options'); // Name of entry in database - will break DB if
 
 /* These files build out the options interface. Likely won't need to edit these. */
 
-require_once (ADMIN_PATH . 'admin-functions.php'); // Custom functions and plugins
+require_once (ADMIN_PATH . 'admin-setup.php'); // Custom functions and plugins
 require_once (ADMIN_PATH . 'admin-interface.php'); // Admin Interfaces (options,framework, seo)
 
 /* These files build out the theme specific options and associated functions. */
 
+require_once (ADMIN_PATH . 'admin-functions.php'); // Theme actions based on options settings
 require_once (ADMIN_PATH . 'theme-options.php'); // Options panel settings and custom settings
-require_once (ADMIN_PATH . 'theme-functions.php'); // Theme actions based on options settings
 
 ?>

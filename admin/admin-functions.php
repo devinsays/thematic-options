@@ -1,92 +1,161 @@
 <?php
 
-/*-----------------------------------------------------------------------------------*/
-/* Head Hook
-/*-----------------------------------------------------------------------------------*/
-
-function of_head() { do_action( 'of_head' ); }
+/* These are functions specific to these options settings and this theme */
 
 /*-----------------------------------------------------------------------------------*/
-/* Get the style path currently selected */
+/* Remove the Options Panel that Thematic comes with by Default
 /*-----------------------------------------------------------------------------------*/
 
-function of_style_path() {
-    $style = $_REQUEST['style'];
-    if ($style != '') {
-        $style_path = $style;
-    } else {
-        $stylesheet = get_option('of_alt_stylesheet');
-        $style_path = str_replace(".css","",$stylesheet);
-    }
-    if ($style_path == "default")
-      echo 'images';
-    else
-      echo 'styles/'.$style_path;
+function remove_thematic_panel() {
+  remove_action('admin_menu' , 'mytheme_add_admin');
 }
+add_action('init', 'remove_thematic_panel');
 
 /*-----------------------------------------------------------------------------------*/
-/* Add default options after activation */
+/* Theme Header Output - wp_head() */
 /*-----------------------------------------------------------------------------------*/
-if (is_admin() && isset($_GET['activated'] ) && $pagenow == "themes.php" ) {
-	//Call action that sets
-	add_action('admin_head','of_option_setup');
-}
 
-function of_option_setup(){
+// This sets up the layouts and styles selected from the options panel
 
-	//Update EMPTY options
-	$of_array = array();
-	add_option('of_options',$of_array);
-
-	$template = get_option('of_template');
-	$saved_options = get_option('of_options');
+if (!function_exists('optionsframework_wp_head')) {
+	function optionsframework_wp_head() { 
+		$shortname =  get_option('of_shortname');
 	
-	foreach($template as $option) {
-		if($option['type'] != 'heading'){
-			$id = $option['id'];
-			$std = $option['std'];
-			$db_option = get_option($id);
-			if(empty($db_option)){
-				if(is_array($option['type'])) {
-					foreach($option['type'] as $child){
-						$c_id = $child['id'];
-						$c_std = $child['std'];
-						update_option($c_id,$c_std);
-						$of_array[$c_id] = $c_std; 
-					}
-				} else {
-					update_option($id,$std);
-					$of_array[$id] = $std;
-				}
-			}
-			else { //So just store the old values over again.
-				$of_array[$id] = $db_option;
-			}
-		}
+		//Layouts
+		 $layout = get_option($shortname .'_layout');
+		 if ($layout == '') {
+		 	$layout = '2c-r-fixed';
+		 }
+	     echo '<link href="'. get_bloginfo('stylesheet_directory') .'/layouts/'. $layout . '.css" rel="stylesheet" type="text/css" />'."\n";
+	    
+		//Styles
+		 if(!isset($_REQUEST['style']))
+		 	$style = ''; 
+		 else 
+	     	$style = $_REQUEST['style'];
+	     if ($style != '') {
+			  $GLOBALS['stylesheet'] = $style;
+	          echo '<link href="'. get_bloginfo('stylesheet_directory') .'/styles/'. $GLOBALS['stylesheet'] . '.css" rel="stylesheet" type="text/css" />'."\n"; 
+	     } else { 
+	          $GLOBALS['stylesheet'] = get_option('of_alt_stylesheet');
+	          if($GLOBALS['stylesheet'] != '')
+	               echo '<link href="'. get_bloginfo('stylesheet_directory') .'/styles/'. $GLOBALS['stylesheet'] .'" rel="stylesheet" type="text/css" />'."\n";         
+	          else
+	               echo '<link href="'. get_bloginfo('stylesheet_directory') .'/styles/default.css" rel="stylesheet" type="text/css" />'."\n";         		  
+	     }       
+			
+		// This prints out the custom css and specific styling options
+		of_head_css();
 	}
-	update_option('of_options',$of_array);
+}
+
+add_action('wp_head', 'optionsframework_wp_head');
+
+
+/*-----------------------------------------------------------------------------------*/
+/* Output CSS from standarized options */
+/*-----------------------------------------------------------------------------------*/
+
+function of_head_css() {
+
+		$shortname =  get_option('of_shortname'); 
+		$output = '';
+		
+		if ($body_color = get_option($shortname . '_body_background') ) {
+			$output .= "body {background:" . $body_color .";}\n";
+		}
+		
+		if ($link_color = get_option($shortname .'_header_background') ) {
+			$output .= "#header {background:" . $link_color .";}\n";
+		}
+		
+		if ($link_hover_color = get_option($shortname .'_footer_background') ) {
+			$output .= "#footer {background:" . $link_hover_color .";}\n";
+		}
+		
+		$custom_css = get_option('of_custom_css');
+		
+		if ($custom_css <> '') {
+			$output .= $custom_css . "\n";
+		}
+		
+		// Output styles
+		if ($output <> '') {
+			$output = "<!-- Custom Styling -->\n<style type=\"text/css\">\n" . $output . "</style>\n";
+			echo $output;
+		}
+	
 }
 
 /*-----------------------------------------------------------------------------------*/
-/* Admin Backend */
+/* Add Favicon
 /*-----------------------------------------------------------------------------------*/
-function optionsframework_admin_head() { 
-	
-	//Tweaked the message on theme activate
-	?>
-    <script type="text/javascript">
-    jQuery(function(){
-    	
-        var message = '<p>This theme comes with an <a href="<?php echo admin_url('admin.php?page=optionsframework'); ?>">options panel</a> to configure settings. This theme also supports widgets, please visit the <a href="<?php echo admin_url('widgets.php'); ?>">widgets settings page</a> to configure them.</p>';
-    	jQuery('.themes-php #message2').html(message);
-    
-    });
-    </script>
-    <?php
-	
+
+function childtheme_favicon() {
+		$shortname =  get_option('of_shortname'); 
+		if (get_option($shortname . '_custom_favicon') != '') {
+	        echo '<link rel="shortcut icon" href="'.  get_option('of_custom_favicon')  .'"/>'."\n";
+	    }
+		else { ?>
+			<link rel="shortcut icon" href="<?php echo bloginfo('stylesheet_directory') ?>/admin/images/favicon.ico" />
+<?php }
 }
 
-add_action('admin_head', 'optionsframework_admin_head'); 
+add_action('wp_head', 'childtheme_favicon');
 
+/*-----------------------------------------------------------------------------------*/
+/* Replace Blog Title With Logo
+/*-----------------------------------------------------------------------------------*/
+
+// If a logo is uploaded, unhook the page title and description
+
+function add_childtheme_logo() {
+	$shortname =  get_option('of_shortname');
+	$logo = get_option($shortname . '_logo');
+	if (!empty($logo)) {
+		remove_action('thematic_header','thematic_blogtitle', 3);
+		remove_action('thematic_header','thematic_blogdescription',5);
+		add_action('thematic_header','childtheme_logo', 3);
+	}
+}
+add_action('init','add_childtheme_logo');
+
+// Displays the logo
+
+function childtheme_logo() {
+	$shortname =  get_option('of_shortname');
+	$logo = get_option($shortname . '_logo');
+    $heading_tag = ( is_home() || is_front_page() ) ? 'h1' : 'div';?>
+    <<?php echo $heading_tag; ?> id="site-title">
+	<a href="<?php bloginfo('url'); ?>" title="<?php bloginfo('description'); ?>">
+    <img src="<?php echo $logo; ?>" alt="<?php bloginfo('name'); ?>"/>
+	</a>
+    </<?php echo $heading_tag; ?>>
+<?php }
+
+ 
+/*-----------------------------------------------------------------------------------*/
+/* Filter Footer Text
+/*-----------------------------------------------------------------------------------*/
+
+function childtheme_footer($thm_footertext) {
+	$shortname =  get_option('of_shortname');
+	if ($footertext = get_option($shortname . '_footer_text'))
+    	return $footertext;
+}
+
+add_filter('thematic_footertext', 'childtheme_footer');
+
+/*-----------------------------------------------------------------------------------*/
+/* Show analytics code in footer */
+/*-----------------------------------------------------------------------------------*/
+
+function childtheme_analytics(){
+	$shortname =  get_option('of_shortname');
+	$output = get_option($shortname . '_google_analytics');
+	if ( $output <> "" ) 
+		echo stripslashes($output) . "\n";
+}
+add_action('wp_footer','childtheme_analytics');
 
 ?>
