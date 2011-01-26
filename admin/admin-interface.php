@@ -41,8 +41,8 @@ function optionsframework_add_admin() {
 	$of_page = add_submenu_page('themes.php', THEMENAME, 'Theme Options', 'edit_theme_options', 'optionsframework','optionsframework_options_page'); // Default
 	
 	// Add framework functionaily to the head individually
-	add_action("admin_print_styles-$of_page",'of_style_only');
 	add_action("admin_print_scripts-$of_page", 'of_load_only');
+	add_action("admin_print_styles-$of_page",'of_style_only');
 } 
 
 add_action('admin_menu', 'optionsframework_add_admin');
@@ -226,7 +226,7 @@ function of_admin_head() {
 			});
 					
 		
-		//Masked Inputs (images as radio buttons)
+			//Masked Inputs (images as radio buttons)
 			$('.of-radio-img-img').click(function() {
 				$(this).parent().parent().find('.of-radio-img-img').removeClass('of-radio-img-selected');
 				$(this).addClass('of-radio-img-selected');
@@ -235,7 +235,7 @@ function of_admin_head() {
 			$('.of-radio-img-img').show();
 			$('.of-radio-img-radio').hide();
 			
-		// COLOR Picker			
+			// COLOR Picker			
 			$('.colorSelector').each(function() {
 				var Othis = this; //cache a copy of the this variable for use inside nested function
 					

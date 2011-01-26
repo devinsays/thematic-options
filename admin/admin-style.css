@@ -26,6 +26,15 @@
 	float: left;
 	margin:10px 20px;
 }
+#of_container #js-warning {
+    color: red;
+    float: left;
+    margin: 20px 10px;
+    width: 330px;
+}
+.js #of_container #js-warning {
+ display: none;
+ }
 #of_container #header .logo h2 {
 	font-style:normal;
 }
@@ -214,6 +223,7 @@ font-family:;
 	margin:0 5px 10px 0;
 	display:none;
 	cursor:pointer;
+	float:left;
 }
 #of_container .controls .of-radio-img-selected {
 	border:3px solid #ccc
