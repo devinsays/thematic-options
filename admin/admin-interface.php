@@ -39,12 +39,11 @@ add_action('admin_init','optionsframework_admin_init');
 
 function optionsframework_add_admin() {
 
-		
-    $of_page = add_submenu_page('themes.php', THEMENAME, 'Theme Options', 'edit_theme_options', 'optionsframework','optionsframework_options_page'); // Default
+	$of_page = add_submenu_page('themes.php', THEMENAME, 'Theme Options', 'edit_theme_options', 'optionsframework','optionsframework_options_page'); // Default
 	
 	// Add framework functionaily to the head individually
-	add_action("admin_print_scripts-$of_page", 'of_load_only');
 	add_action("admin_print_styles-$of_page",'of_style_only');
+	add_action("admin_print_scripts-$of_page", 'of_load_only');
 } 
 
 add_action('admin_menu', 'optionsframework_add_admin');
@@ -124,20 +123,25 @@ function of_style_only() {
 /*-----------------------------------------------------------------------------------*/
 
 function of_load_only() {
-	add_action('admin_head', 'of_admin_head');
 	wp_enqueue_script('jquery-ui-core');
 	wp_register_script('jquery-input-mask', ADMIN .'js/jquery.maskedinput-1.2.2.js', array( 'jquery' ));
 	wp_enqueue_script('jquery-input-mask');
 	wp_enqueue_script('color-picker', ADMIN .'js/colorpicker.js', array('jquery'));
 	wp_enqueue_script('ajaxupload', ADMIN .'js/ajaxupload.js', array('jquery'));
+	add_action('admin_head', 'of_admin_head');
 }
 
 
 function of_admin_head() { 
 	$data = get_option(OPTIONS); ?>
 	<script type="text/javascript" language="javascript">
+	
 		jQuery.noConflict();
 		jQuery(document).ready(function($) {
+		
+		if (typeof AjaxUpload != 'function') { 
+			return ++counter < 6 && window.setTimeout(init, counter * 500);
+		}
 		
 		//hides warning if js is enabled			
 			$('#js-warning').hide();
@@ -254,7 +258,7 @@ function of_admin_head() {
 			}); //end color picker
 			
 		//AJAX Upload
-			$('.image_upload_button').each(function() {	
+			$('.image_upload_button').each(function() {
 			var clickedObject = $(this);
 			var clickedID = $(this).attr('id');		
 			var nonce = $('#security').val();
